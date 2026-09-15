@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Shah Wisal Ahmad - Business Management Student Portfolio">
+    <meta name="keywords" content="portfolio, business management, student, Dong-A University">
+    <title>Shah Wisal Ahmad | Student Portfolio</title>
+
+    <style>
+        /* ==================== CSS Variables ==================== */
+        :root {
+            --primary-color: #1f3c88;
+            --primary-dark: #162d5e;
+            --primary-light: #2d5aa8;
+            --accent-color: #00a8e8;
+            --secondary-color: #f4f6f8;
+            --text-dark: #333;
+            --text-light: #666;
+            --white: #ffffff;
+            --shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
+            --border-radius: 10px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --spacing: 20px;
+        }
+
+        /* ==================== Global Styles ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #e8ecf1 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        /* ==================== Animations ==================== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: var(--shadow);
+            }
+            50% {
+                box-shadow: 0 5px 15px rgba(31, 60, 136, 0.15);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        /* ==================== Header ==================== */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            text-align: center;
+            padding: 60px var(--spacing);
+            animation: slideDown 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header p {
+            font-size: 18px;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+            opacity: 0.95;
+        }
+
+        /* ==================== Container ==================== */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 var(--spacing);
+        }
+
+        /* ==================== Sections ==================== */
+        section {
+            background: var(--white);
+            margin-bottom: 25px;
+            padding: 35px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: slideUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+
+        section:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        section:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        section:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        section:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        section:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        section:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        section:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        section:nth-child(8) {
+            animation-delay: 0.8s;
+        }
+
+        section:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+
+        /* ==================== Headings ==================== */
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 12px;
+            font-size: 26px;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--accent-color);
+            animation: expandWidth 0.6s ease-out;
+        }
+
+        @keyframes expandWidth {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        h3 {
+            color: var(--primary-light);
+            margin-top: 20px;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        /* ==================== Lists ==================== */
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 10px;
+            transition: var(--transition);
+        }
+
+        li:hover {
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        li::before {
+            content: '▪';
+            position: absolute;
+            left: -15px;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* ==================== Info & Paragraphs ==================== */
+        .info p {
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        section p {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* ==================== Links ==================== */
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        a:hover {
+            color: var(--primary-light);
+        }
+
+        a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s ease-out;
+        }
+
+        a:hover::after {
+            width: 100%;
+        }
+
+        /* ==================== Contact Section ==================== */
+        .contact {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(31, 60, 136, 0.05) 0%, rgba(0, 168, 232, 0.05) 100%);
+        }
+
+        .contact a {
+            display: inline-block;
+            padding: 8px 0;
+            font-weight: 600;
+        }
+
+        /* ==================== Footer ==================== */
+        footer {
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--white);
+            padding: 25px var(--spacing);
+            margin-top: 40px;
+            animation: slideUp 0.8s ease-out 0.9s both;
+        }
+
+        footer p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* ==================== Responsive Design ==================== */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 32px;
+            }
+
+            header p {
+                font-size: 16px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            section {
+                padding: 25px;
+                margin-bottom: 20px;
+            }
+
+            .container {
+                margin: 30px auto;
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            :root {
+                --spacing: 15px;
+            }
+
+            header {
+                padding: 40px var(--spacing);
+            }
+
+            header h1 {
+                font-size: 26px;
+                margin-bottom: 8px;
+            }
+
+            header p {
+                font-size: 14px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            section {
+                padding: 20px;
+                margin-bottom: 15px;
+            }
+
+            ul {
+                padding-left: 15px;
+            }
+
+            li {
+                margin-bottom: 10px;
+            }
+        }
+
+        /* ==================== Accessibility ==================== */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Shah Wisal Ahmad</h1>
+        <p>Business Management Student</p>
+        <p>Dong-A University | Busan, South Korea</p>
+    </header>
+
+    <main class="container">
+
+        <!-- Personal Information -->
+        <section class="info">
+            <h2>Personal Information</h2>
+
+            <p><strong>Name:</strong> Shah Wisal Ahmad</p>
+            <p><strong>Nationality:</strong> Pakistani</p>
+            <p><strong>Country:</strong> Pakistan</p>
+            <p><strong>University:</strong> Dong-A University</p>
+            <p><strong>Major:</strong> Business Management</p>
+            <p><strong>Location:</strong> Busan, South Korea</p>
+            <p>
+                <strong>Email:</strong>
+                <a href="mailto:wisalahmadshah911@gmail.com">
+                    wisalahmadshah911@gmail.com
+                </a>
+            </p>
+        </section>
+
+        <!-- About Me -->
+        <section>
+            <h2>About Me</h2>
+
+            <p>
+                My name is Shah Wisal Ahmad, and I am a Business Management
+                student at Dong-A University in Busan, South Korea. I am
+                interested in learning about business, management, marketing,
+                and how companies work in different countries.
+            </p>
+
+            <br>
+
+            <p>
+                Studying in South Korea has given me the opportunity to
+                experience a different culture and meet people from different
+                backgrounds. I am currently focused on improving my knowledge
+                and gaining experience for my future career.
+            </p>
+        </section>
+
+        <!-- Education -->
+        <section>
+            <h2>Education</h2>
+
+            <h3>Dong-A University</h3>
+            <p>Busan, South Korea</p>
+            <p><strong>Business Management</strong></p>
+            <p>Expected Graduation: 2027</p>
+        </section>
+
+        <!-- Interests -->
+        <section>
+            <h2>Interests</h2>
+
+            <ul>
+                <li>Business and management</li>
+                <li>Marketing</li>
+                <li>International business</li>
+                <li>Entrepreneurship</li>
+                <li>Learning about different cultures</li>
+            </ul>
+        </section>
+
+        <!-- Skills -->
+        <section>
+            <h2>Skills</h2>
+
+            <ul>
+                <li>Communication</li>
+                <li>Teamwork</li>
+                <li>Microsoft PowerPoint</li>
+                <li>Basic Microsoft Excel</li>
+            </ul>
+        </section>
+
+        <!-- Languages -->
+        <section>
+            <h2>Languages</h2>
+
+            <ul>
+                <li>Urdu — Native</li>
+                <li>English — Good</li>
+                <li>Korean — Basic</li>
+            </ul>
+        </section>
+
+        <!-- Future Goal -->
+        <section>
+            <h2>Future Goal</h2>
+
+            <p>
+                My goal is to complete my studies and build a career in the
+                business field. I would like to gain practical experience and
+                eventually work in an international company.
+            </p>
+        </section>
+
+        <!-- Contact -->
+        <section class="contact">
+            <h2>Contact</h2>
+
+            <p>
+                <strong>Email:</strong>
+                <a href="mailto:wisalahmadshah911@gmail.com">
+                    wisalahmadshah911@gmail.com
+                </a>
+            </p>
+
+            <p><strong>Country:</strong> Pakistan</p>
+            <p><strong>Current Location:</strong> Busan, South Korea</p>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>© 2026 Shah Wisal Ahmad</p>
+    </footer>
+
+</body>
+</html>
