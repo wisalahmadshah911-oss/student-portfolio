@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flip Attack</title>
+<style>
+:root{--bg:#e4ebf3;--card:#fff;--ink:#14202e;--muted:#52647a;--red:#e5484d;--blue:#3b82f6;--gold:#f5b400;--cell:#33485f;--cell2:#2b3e54;--board:#1d2b3b;--line:#c5d1de}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:500px;margin:0 auto;padding:14px 12px 30px}
+[hidden]{display:none!important}
+h1{margin:6px 0 2px;font-size:2.6rem;text-align:center;letter-spacing:.01em}
+.r{color:var(--red)}.b{color:var(--blue)}
+.tag{text-align:center;color:var(--muted);margin:0 0 12px;font-weight:600}
+.panel{background:var(--card);border-radius:16px;padding:14px 16px;margin-bottom:12px;line-height:1.55}
+.panel h2{margin:0 0 6px;font-size:1.05rem}
+.panel ul{margin:4px 0;padding-left:20px}
+.modes{display:grid;gap:10px;margin-top:6px}
+button{font:inherit;font-weight:700;border-radius:12px;border:2px solid var(--ink);background:var(--card);color:var(--ink);padding:12px 16px;cursor:pointer}
+button:hover{background:#eef3f9}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+button.big{font-size:1.1rem;padding:14px;border:0;color:#fff}
+#pvp{background:var(--red)}#pvc{background:var(--blue)}
+button.big:hover{filter:brightness(1.08)}
+.players{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pl{background:var(--card);border:3px solid var(--line);border-radius:14px;padding:8px 12px;transition:border-color .2s}
+.pl.on.p1{border-color:var(--red)}.pl.on.p2{border-color:var(--blue)}
+.pl .n{font-weight:700;display:flex;align-items:center;gap:6px}
+.dot{width:14px;height:14px;border-radius:50%}
+.p1 .dot{background:var(--red)}.p2 .dot{background:var(--blue)}
+.pl .v{font-size:2rem;font-weight:800;line-height:1.1}
+.pl .s{font-size:.85rem;color:var(--muted)}
+.dbl{display:inline-block;margin-top:4px;font-size:.8rem;font-weight:700;background:var(--gold);color:#201600;padding:2px 8px;border-radius:99px}
+#info{text-align:center;margin:12px 0 4px;font-weight:700}
+#msg{min-height:3.2em;text-align:center;margin:6px 0;line-height:1.4}
+#board{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;background:var(--board);padding:6px;border-radius:16px;width:100%}
+.cell{aspect-ratio:1;min-width:0;padding:0;border:0;border-radius:9px;background:var(--cell);color:#fff;font-size:clamp(1.2rem,6vw,1.8rem);display:flex;align-items:center;justify-content:center;position:relative}
+.cell:nth-child(even){background:var(--cell2)}
+.cell.sp{box-shadow:inset 0 0 0 2px #5d7a99}
+.cell:hover:not(.occ){background:#47647f}
+.cell.cur{outline:3px solid var(--gold);outline-offset:-3px}
+.cell.tg{outline:3px dashed #ff9f43;outline-offset:-3px}
+.pc{width:78%;height:78%;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:1.05rem;position:relative;box-shadow:inset 0 -4px 0 rgba(0,0,0,.25)}
+.o1{background:var(--red)}.o2{background:var(--blue)}
+.cell.last .pc{box-shadow:0 0 0 3px #fff,inset 0 -4px 0 rgba(0,0,0,.25)}
+.pc.sh,.cell.last .pc.sh{box-shadow:0 0 0 3px var(--gold),inset 0 -4px 0 rgba(0,0,0,.25)}
+.sb{position:absolute;right:-7px;top:-9px;font-size:.9rem;font-style:normal}
+.pop{animation:pop .28s ease-out}.fl{animation:flip .4s ease-in-out}
+@keyframes pop{from{transform:scale(.3)}to{transform:scale(1)}}
+@keyframes flip{50%{transform:scaleX(.1)}}
+@media (prefers-reduced-motion:reduce){.pop,.fl{animation:none}}
+.bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.bar button{padding:10px 14px}
+.pri{background:var(--ink);color:#fff}.pri:hover{background:#2a3b50}
+.legend{margin-top:14px;font-size:.9rem}
+#ov{position:fixed;inset:0;background:rgba(10,20,32,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
+.box{background:var(--card);border-radius:18px;padding:22px;max-width:360px;width:100%;text-align:center}
+.box h2{margin:0 0 8px;font-size:1.8rem}
+.box p{margin:6px 0;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<h1><span class="r">Flip</span> <span class="b">Attack</span></h1>
+<p class="tag">Capture. Protect. Dominate.</p>
+
+<!-- ===== Start menu ===== -->
+<section id="menu">
+  <div class="panel"><h2>How to play</h2>
+    <p>Red and Blue take turns placing a piece on any empty cell of the 6×6 board. Trap a straight line of opponent pieces (any of 8 directions) between your new piece and another of yours to flip them. The game lasts 25 moves in total. The highest score wins; a tie goes to the player with more pieces.</p></div>
+  <div class="panel"><h2>Scoring</h2>
+    <ul><li>Place a piece: +1</li><li>Capture an opponent piece: +2 each</li><li>🪙 Bonus: +3 extra</li><li>💣 Bomb: +4 extra</li><li>🛡️ Shield: +1 extra</li><li>⚡ Double Score: doubles your next capture points</li></ul></div>
+  <div class="panel"><h2>Special cells</h2>
+    <ul><li>🪙 Bonus: just extra points.</li><li>💣 Bomb: also flips one adjacent opponent piece you choose.</li><li>🛡️ Shield: your piece blocks one capture.</li><li>⚡ Double Score: stays ready until you capture.</li></ul>
+    <p>Each special cell works once, and they are always in the same places.</p></div>
+  <div class="modes">
+    <button class="big" id="pvp">Play vs Player</button>
+    <button class="big" id="pvc">Play vs Computer</button>
+  </div>
+</section>
+
+<!-- ===== Game screen ===== -->
+<section id="game" hidden>
+  <div class="players"><div class="pl p1" id="s1"></div><div class="pl p2" id="s2"></div></div>
+  <div id="info"></div>
+  <div id="board" role="grid" aria-label="Flip Attack board, 6 by 6"></div>
+  <div id="msg" role="status" aria-live="polite"></div>
+  <div class="bar">
+    <button id="pauseBtn">Pause</button>
+    <button id="sndBtn" aria-pressed="true">Sound: On</button>
+    <button id="restartBtn">Restart</button>
+    <button id="menuBtn">Main Menu</button>
+  </div>
+  <div class="panel legend"><b>Special cells</b>
+    <div>🪙 Bonus: +3 points</div><div>💣 Bomb: +4 points and one adjacent capture</div>
+    <div>🛡️ Shield: +1 point and blocks one capture</div><div>⚡ Double Score: next capture counts double</div></div>
+</section>
+</main>
+<div id="ov" hidden><div class="box" role="dialog" aria-modal="true" aria-labelledby="ot"><h2 id="ot"></h2><div id="op"></div><div class="bar" id="ob"></div></div></div>
+
+<script>
+/* ===== Constants ===== */
+const MAXM = 25;                                        // total placements per game
+const NAME = ['', 'Red', 'Blue'];
+const ICON = {bonus:'🪙', bomb:'💣', shield:'🛡️', double:'⚡'};
+const SPECIAL = {bonus:[[2,2],[5,5]], bomb:[[2,5],[5,2]], shield:[[1,3],[6,4]], double:[[3,1],[4,6]]}; // (row, col) from 1
+const SPMAP = {};                                       // cell index -> special type
+for (const k in SPECIAL) SPECIAL[k].forEach(([r,c]) => SPMAP[(r-1)*6 + c-1] = k);
+
+let G = null, modal = null, kb = false, SND = true, AC = null, aiTimer = null;
+const $ = id => document.getElementById(id);
+
+/* ===== Sound and vibration (both optional) ===== */
+function ensureAudio() {
+  try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch (e) { AC = null; }
+}
+function tone(f, d, type, at, v) {
+  if (!SND || !AC) return;
+  const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + (at || 0);
+  o.type = type || 'sine'; o.frequency.setValueAtTime(f, t);
+  g.gain.setValueAtTime(v || .14, t); g.gain.exponentialRampToValueAtTime(.001, t + d);
+  o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + d);
+}
+function vib(p) { if (SND && navigator.vibrate) { try { navigator.vibrate(p); } catch (e) {} } }
+function sfx(k, n) {
+  if (k === 'place') { tone(440, .1, 'triangle'); vib(20); }
+  else if (k === 'capture') { for (let i = 0; i < Math.min(n, 4); i++) tone(520 + i*110, .12, 'square', i*.07, .07); vib([30,30,50]); }
+  else if (k === 'bomb') { tone(110, .4, 'sawtooth', 0, .2); tone(70, .5, 'square', .05, .14); vib([90,40,140]); }
+  else if (k === 'bonus') { tone(880, .1); tone(1320, .18, 'sine', .1); vib([20,30,20]); }
+  else if (k === 'shield') { tone(300, .2, 'triangle'); tone(450, .2, 'triangle', .1); vib(40); }
+  else if (k === 'double') { [600,900,1200].forEach((f,i) => tone(f, .1, 'square', i*.08, .07)); vib([20,20,20,20,40]); }
+  else if (k === 'win') { [523,659,784,1047].forEach((f,i) => tone(f, .25, 'triangle', i*.14)); vib([100,60,100,60,220]); }
+  else if (k === 'draw') { tone(392, .25, 'triangle'); tone(392, .3, 'triangle', .25); vib(120); }
+}
+
+/* ===== State ===== */
+function newGame(ai) {
+  clearTimeout(aiTimer);
+  NAME[2] = ai ? 'Computer' : 'Blue';
+  G = {ai, b:Array(36).fill(0), sh:Array(36).fill(0), used:Array(36).fill(false), p:1, moves:0,
+       sc:[0,0,0], dbl:[0,0,0], pend:null, over:false, paused:false, cur:14, last:-1, fl:[],
+       msg:'Red’s turn. Place a piece on any empty cell.'};
+  G.b[14] = 2; G.b[15] = 1; G.b[20] = 1; G.b[21] = 2;   // balanced centre: (3,3)B (3,4)R (4,3)R (4,4)B
+  modal = null; $('ov').hidden = true;
+  $('menu').hidden = true; $('game').hidden = false;
+  render();
+}
+function showMenu() {
+  clearTimeout(aiTimer); G = null; modal = null;
+  $('ov').hidden = true; $('game').hidden = true; $('menu').hidden = false;
+}
+const snap = () => JSON.stringify({b:G.b, sh:G.sh, used:G.used, sc:G.sc, dbl:G.dbl, p:G.p, moves:G.moves, last:G.last});
+const count = p => G.b.filter(x => x === p).length;
+const aiTurn = () => G.ai && G.p === 2 && !G.over;
+
+/* ===== Geometry and capture ===== */
+function neighbours(i) {
+  const r = i/6|0, c = i%6, a = [];
+  for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+    const rr = r+dr, cc = c+dc;
+    if ((dr || dc) && rr >= 0 && rr < 6 && cc >= 0 && cc < 6) a.push(rr*6+cc);
+  }
+  return a;
+}
+/* Straight-line captures from cell i for player pl (read-only). Shielded pieces are listed as blocked. */
+function lineCaptures(i, pl) {
+  const r = i/6|0, c = i%6, flips = [], blocked = [];
+  for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+    if (!dr && !dc) continue;
+    const run = []; let rr = r+dr, cc = c+dc, ok = false;
+    while (rr >= 0 && rr < 6 && cc >= 0 && cc < 6) {
+      const j = rr*6+cc;
+      if (G.b[j] === 3-pl) run.push(j);
+      else { ok = G.b[j] === pl && run.length > 0; break; }
+      rr += dr; cc += dc;
+    }
+    if (ok) run.forEach(j => (G.sh[j] ? blocked : flips).push(j));
+  }
+  return {flips, blocked};
+}
+
+/* ===== Making a move ===== */
+function say(t) { G.msg = t; render(); }
+
+function tryPlace(i, auto) {
+  if (modal || G.paused) return;
+  if (G.over) return say('The game is over.');
+  if (aiTurn() && !auto) return;
+  if (G.pend) return say('Choose one highlighted opponent piece for the Bomb first.');
+  if (G.b[i]) return say('That cell is already occupied. Pick an empty cell.');
+  const pl = G.p, sp = (SPMAP[i] && !G.used[i]) ? SPMAP[i] : null, before = snap();
+  G.b[i] = pl; G.last = i; G.cur = i;
+  if (sp) G.used[i] = true;
+  const {flips, blocked} = lineCaptures(i, pl);
+  flips.forEach(j => G.b[j] = pl);
+  blocked.forEach(j => G.sh[j] = 0);
+  const m = {pl, sp, i, flips:flips.length, blocked:blocked.length, fl:flips.slice()};
+  if (sp === 'bomb') {
+    const targets = neighbours(i).filter(j => G.b[j] === 3-pl);
+    if (targets.length) {
+      G.pend = {m, targets, before}; G.cur = targets[0];
+      G.msg = G.ai && pl === 2 ? 'Computer is choosing a Bomb target…' : 'Bomb! Select one highlighted opponent piece. Esc cancels.';
+      render(); return aiSchedule();
+    }
+  }
+  finishMove(m);
+}
+
+function bombPick(j, auto) {
+  if (aiTurn() && !auto) return;
+  if (!G.pend.targets.includes(j)) return say('Pick one of the highlighted opponent pieces.');
+  const m = G.pend.m;
+  if (G.sh[j]) { G.sh[j] = 0; m.blocked++; }           // shield blocks the Bomb, piece keeps its colour
+  else { G.b[j] = m.pl; m.flips++; m.fl.push(j); }
+  G.pend = null;
+  finishMove(m);
+}
+
+function cancelBomb() {                                 // undo the placement; the Bomb is not consumed
+  Object.assign(G, JSON.parse(G.pend.before));
+  G.pend = null; G.fl = [];
+  G.msg = 'Bomb cancelled. ' + NAME[G.p] + ', choose a cell again.';
+  render();
+}
+
+/* Score the move, apply special effects, then switch turn or end the game */
+function finishMove(m) {
+  const pl = m.pl, parts = [];
+  let pts = 1, cp = m.flips * 2;
+  if (m.flips) parts.push(NAME[pl] + ' captured ' + m.flips + ' piece' + (m.flips > 1 ? 's' : '') + '!');
+  if (m.flips && G.dbl[pl]) { cp *= 2; G.dbl[pl] = 0; parts.push('Double Score doubled the capture points!'); }
+  pts += cp;
+  if (m.blocked) parts.push('Shield blocked a capture!');
+  if (m.sp === 'bonus')  { pts += 3; parts.push('Bonus: +3 points'); }
+  if (m.sp === 'bomb')   { pts += 4; parts.push('Bomb activated: +4 points'); }
+  if (m.sp === 'shield') { pts += 1; G.sh[m.i] = 1; parts.push('Shield placed: +1 point'); }
+  if (m.sp === 'double') { G.dbl[pl] = 1; parts.push('Double Score activated!'); }
+  G.sc[pl] += pts; G.moves++; G.fl = m.fl;
+  parts.push(NAME[pl] + ' earned ' + pts + ' point' + (pts > 1 ? 's' : '') + ' this move.');
+  sfx('place');
+  if (m.flips) sfx('capture', m.flips);
+  if (m.sp) setTimeout(() => sfx(m.sp), 220);
+  if (G.moves >= MAXM) { G.over = true; G.msg = parts.join(' '); render(true); return showEnd(); }
+  G.p = 3 - pl;
+  G.msg = parts.join(' ') + ' ' + NAME[G.p] + '’s turn.';
+  render(true); aiSchedule();
+}
+
+/* ===== Computer opponent ===== */
+function aiSchedule() {
+  clearTimeout(aiTimer);
+  if (!G || modal || G.paused || !aiTurn()) return;
+  aiTimer = setTimeout(G.pend ? aiBomb : aiMove, G.pend ? 600 : 850);
+}
+function aiMove() {
+  if (!G || modal || G.paused || !aiTurn() || G.pend) return;
+  let best = -1, bs = -1e9;
+  for (let i = 0; i < 36; i++) {
+    if (G.b[i]) continue;
+    const {flips, blocked} = lineCaptures(i, 2), sp = (SPMAP[i] && !G.used[i]) ? SPMAP[i] : null;
+    let n = flips.length;
+    if (sp === 'bomb' && neighbours(i).some(j => G.b[j] === 1 && !G.sh[j] && !flips.includes(j))) n++;
+    let s = 1 + n*2 * (n && G.dbl[2] ? 2 : 1) + blocked.length * -0.5;
+    if (sp === 'bonus') s += 3;
+    if (sp === 'bomb') s += 4;
+    if (sp === 'shield') s += 2;                         // +1 point and protection
+    if (sp === 'double' && !G.dbl[2]) s += 2;            // power is worth saving for a capture
+    const r = i/6|0, c = i%6, edge = (r === 0 || r === 5), side = (c === 0 || c === 5);
+    if (edge && side) s += 1.5; else if (edge || side) s += .4;   // corners are hard to flip
+    s += neighbours(i).filter(j => G.b[j] === 1).length * -0.15;  // avoid crowding next to Red
+    s += Math.random() * .4;
+    if (s > bs) { bs = s; best = i; }
+  }
+  tryPlace(best, true);
+}
+function aiBomb() {
+  if (!G || modal || G.paused || !G.pend || !aiTurn()) return;
+  const t = G.pend.targets;
+  bombPick(t.find(j => !G.sh[j]) ?? t[0], true);          // prefer a piece without a shield
+}
+
+/* ===== Game over, dialogs, pause, restart ===== */
+function showEnd() {
+  const a = G.sc[1], b = G.sc[2], pa = count(1), pb = count(2);
+  let w = 0;
+  if (a !== b) w = a > b ? 1 : 2; else if (pa !== pb) w = pa > pb ? 1 : 2;
+  const title = w ? NAME[w] + ' Wins!' : 'It’s a Draw!';
+  G.msg = title; render();
+  sfx(w ? 'win' : 'draw');
+  openModal('end', title,
+    '<p>Red: ' + a + ' points, ' + pa + ' pieces</p><p>' + NAME[2] + ': ' + b + ' points, ' + pb + ' pieces</p><p>Total moves played: ' + G.moves + '</p>' + (a === b && w ? '<p>Tied on score, so piece count decided it.</p>' : ''),
+    [{label:'Play Again', fn:() => newGame(G.ai), pri:1}, {label:'Main Menu', fn:showMenu}]);
+}
+function openModal(kind, title, html, btns) {
+  modal = kind; $('ot').textContent = title; $('op').innerHTML = html; $('ob').innerHTML = '';
+  btns.forEach(b => { const el = document.createElement('button'); el.textContent = b.label; if (b.pri) el.className = 'pri'; el.onclick = b.fn; $('ob').appendChild(el); });
+  $('ov').hidden = false; $('ob').firstChild.focus();
+}
+function closeModal() {
+  if (modal === 'end') return;
+  if (modal === 'pause') G.paused = false;
+  modal = null; $('ov').hidden = true; render(); aiSchedule();
+}
+function togglePause() {
+  if (!G || G.over) return;
+  if (modal === 'pause') return closeModal();
+  if (modal) return;
+  clearTimeout(aiTimer); G.paused = true;               // pending Bomb state stays in G.pend
+  openModal('pause', 'Paused', '<p>The game is frozen. Press Resume or P to continue.</p>', [{label:'Resume', fn:closeModal, pri:1}]);
+  render();
+}
+function askRestart() {
+  if (!G || modal) return;
+  if (G.over) return newGame(G.ai);
+  openModal('restart', 'Restart game?', '<p>The current game will be lost.</p>',
+    [{label:'Yes, restart', fn:() => newGame(G.ai), pri:1}, {label:'Keep playing', fn:closeModal}]);
+}
+function askMenu() {
+  if (!G || modal) return;
+  openModal('menu', 'Back to main menu?', '<p>The current game will be lost.</p>',
+    [{label:'Main Menu', fn:showMenu, pri:1}, {label:'Keep playing', fn:closeModal}]);
+}
+
+/* ===== Rendering ===== */
+function render(anim) {
+  [1,2].forEach(p => {
+    const el = $('s'+p), on = G.p === p && !G.over;
+    el.className = 'pl p'+p + (on ? ' on' : '');
+    el.innerHTML = '<div class="n"><span class="dot"></span>' + NAME[p] + (on ? ' (turn)' : '') + '</div><div class="v">' + G.sc[p] + '</div><div class="s">' + count(p) + ' pieces</div>' + (G.dbl[p] ? '<span class="dbl">⚡ Double Score active</span>' : '');
+  });
+  $('info').textContent = G.over ? 'Game over: ' + G.moves + ' of ' + MAXM + ' moves played'
+    : 'Move ' + (G.moves+1) + ' of ' + MAXM + ' (' + (MAXM-G.moves) + ' left). ' + NAME[G.p] + ' to play';
+  $('msg').textContent = G.msg;
+  $('pauseBtn').textContent = G.paused ? 'Resume' : 'Pause';
+  $('sndBtn').textContent = 'Sound: ' + (SND ? 'On' : 'Off'); $('sndBtn').setAttribute('aria-pressed', SND);
+  let h = '';
+  for (let i = 0; i < 36; i++) {
+    const o = G.b[i], sp = (!G.used[i] && SPMAP[i]) || null, tg = G.pend && G.pend.targets.includes(i);
+    const label = 'Row ' + ((i/6|0)+1) + ', column ' + (i%6+1) + ': ' + (o ? NAME[o] + ' piece' + (G.sh[i] ? ', shielded' : '') : (sp ? sp + ' cell, empty' : 'empty'));
+    const ani = anim ? (i === G.last ? ' pop' : G.fl.includes(i) ? ' fl' : '') : '';
+    h += '<button class="cell' + (o ? ' occ' : '') + (sp ? ' sp' : '') + (i === G.cur ? ' cur' : '') + (i === G.last ? ' last' : '') + (tg ? ' tg' : '') +
+      '" data-i="' + i + '" tabindex="' + (i === G.cur ? 0 : -1) + '" role="gridcell" aria-label="' + label + '">' +
+      (o ? '<span class="pc o' + o + (G.sh[i] ? ' sh' : '') + ani + '">' + (o === 1 ? 'R' : 'B') + (G.sh[i] ? '<i class="sb">🛡️</i>' : '') + '</span>' : (sp ? ICON[sp] : '')) + '</button>';
+  }
+  $('board').innerHTML = h;
+  if (kb && !modal) $('board').children[G.cur].focus();
+}
+
+/* ===== Events ===== */
+$('pvp').onclick = () => { ensureAudio(); newGame(false); };
+$('pvc').onclick = () => { ensureAudio(); newGame(true); };
+$('pauseBtn').onclick = togglePause;
+$('restartBtn').onclick = askRestart;
+$('menuBtn').onclick = askMenu;
+$('sndBtn').onclick = () => { SND = !SND; if (SND) { ensureAudio(); sfx('place'); } render(); };
+$('board').addEventListener('mousedown', () => { kb = false; });
+$('board').addEventListener('click', e => {             // mouse, touch, Enter and Space all arrive here
+  const c = e.target.closest('.cell'); if (!c || !G || modal || G.paused) return;
+  const i = +c.dataset.i;
+  if (!aiTurn()) G.cur = i;
+  if (G.pend) bombPick(i); else tryPlace(i);
+});
+document.addEventListener('keydown', e => {
+  if (!G) return;
+  const k = e.key;
+  if (modal) { if (k === 'Escape' || (k.toLowerCase() === 'p' && modal === 'pause')) closeModal(); return; }
+  if (k.toLowerCase() === 'p') return togglePause();
+  if (k.toLowerCase() === 'r') return askRestart();
+  if (G.over || G.paused) return;
+  if (k === 'Escape' && G.pend && !aiTurn()) { e.preventDefault(); return cancelBomb(); }
+  const d = {ArrowLeft:[0,-1], ArrowRight:[0,1], ArrowUp:[-1,0], ArrowDown:[1,0]}[k];
+  if (!d || aiTurn()) return;
+  e.preventDefault(); kb = true;
+  if (G.pend) {                                         // arrows cycle through eligible Bomb targets
+    const t = G.pend.targets, st = (k === 'ArrowLeft' || k === 'ArrowUp') ? -1 : 1;
+    G.cur = t[(t.indexOf(G.cur) + st + t.length) % t.length];
+  } else {
+    const r = (G.cur/6|0) + d[0], c = G.cur%6 + d[1];
+    if (r >= 0 && r < 6 && c >= 0 && c < 6) G.cur = r*6 + c;
+  }
+  render();
+});
+</script>
+</body>
+</html>
