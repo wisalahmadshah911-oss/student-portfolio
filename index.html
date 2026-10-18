@@ -8,7 +8,6 @@
     <title>Shah Wisal Ahmad | Student Portfolio</title>
 
     <style>
-        /* ==================== CSS Variables ==================== */
         :root {
             --primary-color: #1f3c88;
             --primary-dark: #162d5e;
@@ -25,12 +24,7 @@
             --spacing: 20px;
         }
 
-        /* ==================== Global Styles ==================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -41,68 +35,12 @@
             animation: fadeIn 0.6s ease-in-out;
         }
 
-        /* ==================== Animations ==================== */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes expandWidth { from { width: 0; } to { width: 100%; } }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes glow {
-            0%, 100% {
-                box-shadow: var(--shadow);
-            }
-            50% {
-                box-shadow: 0 5px 15px rgba(31, 60, 136, 0.15);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.8;
-            }
-        }
-
-        /* ==================== Header ==================== */
         header {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             color: var(--white);
@@ -124,40 +62,11 @@
             animation: rotate 20s linear infinite;
         }
 
-        @keyframes rotate {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+        header h1 { font-size: 42px; margin-bottom: 10px; font-weight: 700; letter-spacing: -0.5px; position: relative; z-index: 1; }
+        header p { font-size: 18px; margin-bottom: 5px; position: relative; z-index: 1; opacity: 0.95; }
 
-        header h1 {
-            font-size: 42px;
-            margin-bottom: 10px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            position: relative;
-            z-index: 1;
-        }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 var(--spacing); }
 
-        header p {
-            font-size: 18px;
-            margin-bottom: 5px;
-            position: relative;
-            z-index: 1;
-            opacity: 0.95;
-        }
-
-        /* ==================== Container ==================== */
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 var(--spacing);
-        }
-
-        /* ==================== Sections ==================== */
         section {
             background: var(--white);
             margin-bottom: 25px;
@@ -169,44 +78,18 @@
             animation-fill-mode: both;
         }
 
-        section:nth-child(1) {
-            animation-delay: 0.1s;
-        }
+        section:nth-child(1) { animation-delay: 0.1s; }
+        section:nth-child(2) { animation-delay: 0.2s; }
+        section:nth-child(3) { animation-delay: 0.3s; }
+        section:nth-child(4) { animation-delay: 0.4s; }
+        section:nth-child(5) { animation-delay: 0.5s; }
+        section:nth-child(6) { animation-delay: 0.6s; }
+        section:nth-child(7) { animation-delay: 0.7s; }
+        section:nth-child(8) { animation-delay: 0.8s; }
+        section:nth-child(9) { animation-delay: 0.9s; }
 
-        section:nth-child(2) {
-            animation-delay: 0.2s;
-        }
+        section:hover { box-shadow: var(--shadow-hover); transform: translateY(-5px); }
 
-        section:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        section:nth-child(4) {
-            animation-delay: 0.4s;
-        }
-
-        section:nth-child(5) {
-            animation-delay: 0.5s;
-        }
-
-        section:nth-child(6) {
-            animation-delay: 0.6s;
-        }
-
-        section:nth-child(7) {
-            animation-delay: 0.7s;
-        }
-
-        section:nth-child(8) {
-            animation-delay: 0.8s;
-        }
-
-        section:hover {
-            box-shadow: var(--shadow-hover);
-            transform: translateY(-5px);
-        }
-
-        /* ==================== Headings ==================== */
         h2 {
             color: var(--primary-color);
             margin-bottom: 20px;
@@ -229,104 +112,26 @@
             animation: expandWidth 0.6s ease-out;
         }
 
-        @keyframes expandWidth {
-            from {
-                width: 0;
-            }
-            to {
-                width: 100%;
-            }
-        }
+        h3 { color: var(--primary-light); margin-top: 20px; margin-bottom: 8px; font-size: 18px; }
 
-        h3 {
-            color: var(--primary-light);
-            margin-top: 20px;
-            margin-bottom: 8px;
-            font-size: 18px;
-        }
+        ul { padding-left: 20px; }
 
-        /* ==================== Lists ==================== */
-        ul {
-            padding-left: 20px;
-        }
+        li { margin-bottom: 12px; position: relative; padding-left: 10px; transition: var(--transition); }
+        li:hover { color: var(--accent-color); transform: translateX(5px); }
+        li::before { content: '▪'; position: absolute; left: -15px; color: var(--accent-color); font-weight: bold; font-size: 12px; }
 
-        li {
-            margin-bottom: 12px;
-            position: relative;
-            padding-left: 10px;
-            transition: var(--transition);
-        }
+        .info p { margin-bottom: 12px; color: var(--text-dark); }
+        section p { color: var(--text-light); line-height: 1.8; }
+        strong { color: var(--primary-color); font-weight: 600; }
 
-        li:hover {
-            color: var(--accent-color);
-            transform: translateX(5px);
-        }
+        a { color: var(--accent-color); text-decoration: none; transition: var(--transition); position: relative; }
+        a:hover { color: var(--primary-light); }
+        a::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--accent-color); transition: width 0.3s ease-out; }
+        a:hover::after { width: 100%; }
 
-        li::before {
-            content: '▪';
-            position: absolute;
-            left: -15px;
-            color: var(--accent-color);
-            font-weight: bold;
-            font-size: 12px;
-        }
+        .contact { text-align: center; background: linear-gradient(135deg, rgba(31, 60, 136, 0.05) 0%, rgba(0, 168, 232, 0.05) 100%); }
+        .contact a { display: inline-block; padding: 8px 0; font-weight: 600; }
 
-        /* ==================== Info & Paragraphs ==================== */
-        .info p {
-            margin-bottom: 12px;
-            color: var(--text-dark);
-        }
-
-        section p {
-            color: var(--text-light);
-            line-height: 1.8;
-        }
-
-        strong {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        /* ==================== Links ==================== */
-        a {
-            color: var(--accent-color);
-            text-decoration: none;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        a:hover {
-            color: var(--primary-light);
-        }
-
-        a::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent-color);
-            transition: width 0.3s ease-out;
-        }
-
-        a:hover::after {
-            width: 100%;
-        }
-
-        /* ==================== Contact Section ==================== */
-        .contact {
-            text-align: center;
-            background: linear-gradient(135deg, rgba(31, 60, 136, 0.05) 0%, rgba(0, 168, 232, 0.05) 100%);
-        }
-
-        .contact a {
-            display: inline-block;
-            padding: 8px 0;
-            font-weight: 600;
-        }
-
-        /* ==================== Footer ==================== */
         footer {
             text-align: center;
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
@@ -335,78 +140,29 @@
             margin-top: 40px;
             animation: slideUp 0.8s ease-out 0.9s both;
         }
+        footer p { font-size: 14px; opacity: 0.9; }
 
-        footer p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        /* ==================== Responsive Design ==================== */
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 32px;
-            }
-
-            header p {
-                font-size: 16px;
-            }
-
-            h2 {
-                font-size: 22px;
-            }
-
-            section {
-                padding: 25px;
-                margin-bottom: 20px;
-            }
-
-            .container {
-                margin: 30px auto;
-                padding: 0 15px;
-            }
+            header h1 { font-size: 32px; }
+            header p { font-size: 16px; }
+            h2 { font-size: 22px; }
+            section { padding: 25px; margin-bottom: 20px; }
+            .container { margin: 30px auto; padding: 0 15px; }
         }
 
         @media (max-width: 600px) {
-            :root {
-                --spacing: 15px;
-            }
-
-            header {
-                padding: 40px var(--spacing);
-            }
-
-            header h1 {
-                font-size: 26px;
-                margin-bottom: 8px;
-            }
-
-            header p {
-                font-size: 14px;
-            }
-
-            h2 {
-                font-size: 20px;
-            }
-
-            section {
-                padding: 20px;
-                margin-bottom: 15px;
-            }
-
-            ul {
-                padding-left: 15px;
-            }
-
-            li {
-                margin-bottom: 10px;
-            }
+            :root { --spacing: 15px; }
+            header { padding: 40px var(--spacing); }
+            header h1 { font-size: 26px; margin-bottom: 8px; }
+            header p { font-size: 14px; }
+            h2 { font-size: 20px; }
+            section { padding: 20px; margin-bottom: 15px; }
+            ul { padding-left: 15px; }
+            li { margin-bottom: 10px; }
         }
 
-        /* ==================== Accessibility ==================== */
         @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
+            *, *::before, *::after {
                 animation-duration: 0.01ms !important;
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
@@ -520,6 +276,24 @@
                 business field. I would like to gain practical experience and
                 eventually work in an international company.
             </p>
+        </section>
+
+        <!-- Projects (new) -->
+        <section>
+            <h2>Projects</h2>
+
+            <h3>Flip Attack: Strategy Board Game</h3>
+            <p>
+                A 6×6 strategy board game for two players or one player against
+                the computer. Players capture pieces, collect special cells,
+                and score the most points in 25 moves. Built with HTML, CSS,
+                and JavaScript for the Let's Build a Game assignment.
+            </p>
+
+            <ul style="margin-top: 12px;">
+                <li><a href="flip_attack.html" target="_blank" rel="noopener">Play Flip Attack</a></li>
+                <li><a href="https://docs.google.com/document/d/1dWNps-bob-rZkC1qsAvLO1z1CKJp5tyI1tYMDjNs1iM/edit?usp=drive_link" target="_blank" rel="noopener">Let's Make a Game: game elements and AI prompt (Google Doc)</a></li>
+            </ul>
         </section>
 
         <!-- Contact -->
